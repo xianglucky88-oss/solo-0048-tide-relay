@@ -1,0 +1,35 @@
+{
+  "language": "JavaScript (Node.js 20+ / 原生浏览器 ES modules)",
+  "project_shape": "fullstack",
+  "source_extensions": [
+    ".mjs"
+  ],
+  "build_command": "npm run build",
+  "testing": "deferred",
+  "workflow_checks": [
+    {
+      "workflow_id": "brief",
+      "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[]); if(!a.options.some(x=>x.available)||a.calendar.length!==6)process.exit(1); console.log(a.course.name);'"
+    },
+    {
+      "workflow_id": "sail",
+      "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[go(\"west\"),k(\"tune\"),go(\"north\")]); if(a.rejected?.code!==\"tide\"||a.state.tick!==3)process.exit(1); console.log(a.rejected.message);'"
+    },
+    {
+      "workflow_id": "charge",
+      "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[go(\"creek\"),go(\"creek\"),k(\"charge\")]); if(a.rejected||a.state.power!==10||a.state.tick!==5)process.exit(1); console.log(a.state.power);'"
+    },
+    {
+      "workflow_id": "tune",
+      "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[go(\"west\"),k(\"tune\"),k(\"tune\")]); if(a.rejected?.code!==\"beacon\"||a.score.signal!==2)process.exit(1); console.log(a.score.signal);'"
+    },
+    {
+      "workflow_id": "finish",
+      "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[go(\"west\"),k(\"tune\"),k(\"wait\"),go(\"crossing\"),k(\"tune\"),go(\"creek\"),k(\"finish\")]); if(!a.score.won||a.state.tick!==9||a.score.points!==98)process.exit(1); console.log(a.score.points);'"
+    },
+    {
+      "workflow_id": "replay",
+      "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const data=[go(\"west\"),k(\"tune\"),k(\"wait\"),go(\"crossing\"),k(\"tune\"),go(\"creek\"),k(\"finish\")]; if(JSON.stringify(briefing(c,data))!==JSON.stringify(briefing(c,JSON.parse(JSON.stringify(data)))))process.exit(1); console.log(data.length);'"
+    }
+  ]
+}

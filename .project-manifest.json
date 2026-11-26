@@ -1,0 +1,144 @@
+{
+  "project_shape": "fullstack",
+  "modules": [
+    {
+      "id": "http",
+      "path": "server/http",
+      "responsibility": "请求行与响应格式"
+    },
+    {
+      "id": "course",
+      "path": "server/course",
+      "responsibility": "站点、周期、流向和可驶航道"
+    },
+    {
+      "id": "voyage",
+      "path": "server/voyage",
+      "responsibility": "状态转换、校准和能源"
+    },
+    {
+      "id": "ui",
+      "path": "public/js",
+      "responsibility": "航图、行动预览和本地恢复"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "brief",
+      "name": "开局航图",
+      "entry": "GET briefing",
+      "success": "显示站点、六刻潮表和可用航道",
+      "failure": "不存在的航次入口返回 404",
+      "verification": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[]); if(!a.options.some(x=>x.available)||a.calendar.length!==6)process.exit(1); console.log(a.course.name);'",
+      "module_ids": [
+        "http",
+        "course",
+        "voyage",
+        "ui"
+      ],
+      "steps": [
+        "从 GET briefing 解析业务输入",
+        "应用领域状态与边界，显示站点、六刻潮表和可用航道"
+      ]
+    },
+    {
+      "id": "sail",
+      "name": "整段潮窗",
+      "entry": "POST replay",
+      "success": "顺利入站并扣减电量",
+      "failure": "跨闭潮时在原刻拒绝",
+      "verification": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[go(\"west\"),k(\"tune\"),go(\"north\")]); if(a.rejected?.code!==\"tide\"||a.state.tick!==3)process.exit(1); console.log(a.rejected.message);'",
+      "module_ids": [
+        "http",
+        "course",
+        "voyage"
+      ],
+      "steps": [
+        "从 POST replay 解析业务输入",
+        "应用领域状态与边界，顺利入站并扣减电量"
+      ]
+    },
+    {
+      "id": "charge",
+      "name": "补给",
+      "entry": "POST replay",
+      "success": "靠岸补电且不上溢",
+      "failure": "满电拒绝充电",
+      "verification": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[go(\"creek\"),go(\"creek\"),k(\"charge\")]); if(a.rejected||a.state.power!==10||a.state.tick!==5)process.exit(1); console.log(a.state.power);'",
+      "module_ids": [
+        "http",
+        "course",
+        "voyage"
+      ],
+      "steps": [
+        "从 POST replay 解析业务输入",
+        "应用领域状态与边界，靠岸补电且不上溢"
+      ]
+    },
+    {
+      "id": "tune",
+      "name": "校准",
+      "entry": "POST replay",
+      "success": "首次校准计分",
+      "failure": "重复校准拒绝",
+      "verification": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[go(\"west\"),k(\"tune\"),k(\"tune\")]); if(a.rejected?.code!==\"beacon\"||a.score.signal!==2)process.exit(1); console.log(a.score.signal);'",
+      "module_ids": [
+        "http",
+        "course",
+        "voyage"
+      ],
+      "steps": [
+        "从 POST replay 解析业务输入",
+        "应用领域状态与边界，首次校准计分"
+      ]
+    },
+    {
+      "id": "finish",
+      "name": "返港结算",
+      "entry": "POST replay",
+      "success": "返港后得到成绩",
+      "failure": "离港交班拒绝",
+      "verification": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[go(\"west\"),k(\"tune\"),k(\"wait\"),go(\"crossing\"),k(\"tune\"),go(\"creek\"),k(\"finish\")]); if(!a.score.won||a.state.tick!==9||a.score.points!==98)process.exit(1); console.log(a.score.points);'",
+      "module_ids": [
+        "http",
+        "course",
+        "voyage",
+        "ui"
+      ],
+      "steps": [
+        "从 POST replay 解析业务输入",
+        "应用领域状态与边界，返港后得到成绩"
+      ]
+    },
+    {
+      "id": "replay",
+      "name": "记录回放",
+      "entry": "POST replay",
+      "success": "指令重放恢复相同状态",
+      "failure": "非法指令保留拒绝前状态",
+      "verification": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const data=[go(\"west\"),k(\"tune\"),k(\"wait\"),go(\"crossing\"),k(\"tune\"),go(\"creek\"),k(\"finish\")]; if(JSON.stringify(briefing(c,data))!==JSON.stringify(briefing(c,JSON.parse(JSON.stringify(data)))))process.exit(1); console.log(data.length);'",
+      "module_ids": [
+        "http",
+        "course",
+        "voyage",
+        "ui"
+      ],
+      "steps": [
+        "从 POST replay 解析业务输入",
+        "应用领域状态与边界，指令重放恢复相同状态"
+      ]
+    }
+  ],
+  "complexity": {
+    "mechanisms": [
+      "潮窗周期与整段覆盖",
+      "顺逆流耗电",
+      "动作契约与状态转换",
+      "确定性复盘",
+      "终局评分",
+      "浏览器存档及恢复",
+      "可行动作预告",
+      "潮相时间线"
+    ]
+  }
+}
