@@ -1,5 +1,6 @@
 export const outerReach = {
   id: 'outer-reach', name: '外湾夜班', home: 'dock', deadline: 18, capacity: 10, quota: 3,
+  mode: 'beacon',
   period: 6, weather: ['平潮', '涨潮', '涨潮', '满潮', '退潮', '退潮'],
   stations: [
     { id: 'dock', name: '西塘起航台', x: 15, y: 65, charge: 4 },

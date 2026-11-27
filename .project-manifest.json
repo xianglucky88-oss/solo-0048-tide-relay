@@ -127,6 +127,41 @@
         "从 POST replay 解析业务输入",
         "应用领域状态与边界，指令重放恢复相同状态"
       ]
+    },
+    {
+      "id": "relay-anchor",
+      "name": "专项收发联调计分",
+      "entry": "POST replay",
+      "success": "交班当刻按开放航道与一发一收取最高链路组合计分",
+      "failure": "闭潮当刻链路剔除、未达标计零",
+      "verification": "node --input-type=module -e 'import {outerReachSpecial as c} from \"./server/course/outer-reach-special.mjs\"; import {score} from \"./server/voyage/score.mjs\"; const st=(tick,sigs,p=1)=>({tick,at:\"dock\",power:p,lit:[],signals:sigs,status:\"returned\",log:[]}); const a=score(c,st(14,{shoal:\"receive\",skerry:\"send\",reed:\"receive\"})); const full={reed:\"send\",foam:\"receive\",shoal:\"send\",skerry:\"receive\"}; const b=score(c,st(24,full)),d=score(c,st(26,full)),e=score(c,st(27,full)); if(a.signal!==4||a.points!==107||b.points!==87||d.points!==123||e.points!==121||d.signal!==6)process.exit(1); console.log(a.points,b.points,d.points,e.points);'",
+      "module_ids": [
+        "course",
+        "voyage",
+        "ui"
+      ],
+      "steps": [
+        "在同一外湾航图上以 27 刻专项期限重放收发设置与改频",
+        "按交班当刻潮窗与一发一收约束做每标至多一条的最大权链路匹配"
+      ]
+    },
+    {
+      "id": "relay-rules",
+      "name": "专项规则全程复演",
+      "entry": "node scripts/check-relay.mjs",
+      "success": "实录锚点、合法重放、链路匹配与旧 18 刻规则全部通过",
+      "failure": "任一规则断言失败即非零退出",
+      "verification": "npm run check:relay",
+      "module_ids": [
+        "course",
+        "voyage",
+        "ui",
+        "http"
+      ],
+      "steps": [
+        "复演需求三段实录的链路点数与得分锚点",
+        "核验收发设置、改频、自动结班、记录还原及夜班旧规则"
+      ]
     }
   ],
   "complexity": {
@@ -138,7 +173,11 @@
       "终局评分",
       "浏览器存档及恢复",
       "可行动作预告",
-      "潮相时间线"
+      "潮相时间线",
+      "多班次航图复用与模式切换",
+      "收发设置与同代价改频",
+      "交班当刻链路开放判定",
+      "每标至多一条的最大权链路匹配"
     ]
   }
 }

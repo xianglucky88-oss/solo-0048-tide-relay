@@ -60,6 +60,17 @@ h2 {
   font-size: 12px;
 }
 
+.tools select {
+  font: inherit;
+  font-size: 13px;
+  color: inherit;
+  background: #284742;
+  border: 1px solid #66847b;
+  border-radius: 5px;
+  padding: 6px 8px;
+  max-width: 240px;
+}
+
 .status {
   display: grid;
   grid-template-columns: repeat(4,1fr);

@@ -3,13 +3,14 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>潮标接力</title><link rel="stylesheet" href="/style.css"><script type="module" src="/js/main.mjs"></script></head>
 <body><main>
-<header class="mast"><div><h1>潮标接力</h1><p>在潮窗和余电允许的条件下，校准信标并准时返港。</p></div>
-<div class="tools"><button id="reset" disabled>重新出航</button><button id="export" disabled>保存指令</button>
+<header class="mast"><div><h1>潮标接力</h1><p>在潮窗和余电允许的条件下，校准信标或完成收发联调，并准时返港。</p></div>
+<div class="tools"><label>航次班次<select id="course-select"></select></label>
+<button id="reset" disabled>重新出航</button><button id="export" disabled>保存指令</button>
 <label>载入指令<input id="import" type="file" accept=".json" disabled></label></div></header>
-<section class="status" aria-label="航次状态"><div>潮刻 <strong id="clock">—</strong></div><div>电量 <strong id="power">—</strong></div><div>信标点数 <strong id="signal">—</strong></div><div>当前位置 <strong id="berth">—</strong></div></section>
-<div class="layout"><section class="water"><div class="plate"><h2>外湾夜班</h2><strong id="verdict" aria-live="polite">航图加载中</strong></div>
+<section class="status" aria-label="航次状态"><div>潮刻 <strong id="clock">—</strong></div><div>电量 <strong id="power">—</strong></div><div><span id="signal-label">信标点数</span> <strong id="signal">—</strong></div><div>当前位置 <strong id="berth">—</strong></div></section>
+<div class="layout"><section class="water"><div class="plate"><h2 id="plate-title">外湾夜班</h2><strong id="verdict" aria-live="polite">航图加载中</strong></div>
 <ol id="calendar" aria-label="接下来潮刻"></ol>
-<canvas id="chart" width="720" height="390" aria-label="外湾站点和航道图"></canvas><p>亮线表示当前可走航路，虚线表示其余航路。</p></section>
+<canvas id="chart" width="720" height="390" aria-label="外湾站点和航道图"></canvas><p id="chart-caption">亮线表示当前可走航路，虚线表示其余航路。</p></section>
 <section class="orders"><h2>下达指令</h2><div id="orders"></div><p id="message" role="status"></p></section></div>
 <section class="ledger"><h2>航次记录</h2><ol id="log" reversed></ol></section>
 </main></body></html>

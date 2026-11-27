@@ -30,6 +30,14 @@
     {
       "workflow_id": "replay",
       "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const data=[go(\"west\"),k(\"tune\"),k(\"wait\"),go(\"crossing\"),k(\"tune\"),go(\"creek\"),k(\"finish\")]; if(JSON.stringify(briefing(c,data))!==JSON.stringify(briefing(c,JSON.parse(JSON.stringify(data)))))process.exit(1); console.log(data.length);'"
+    },
+    {
+      "workflow_id": "relay-anchor",
+      "command": "node --input-type=module -e 'import {outerReachSpecial as c} from \"./server/course/outer-reach-special.mjs\"; import {score} from \"./server/voyage/score.mjs\"; const st=(tick,sigs,p=1)=>({tick,at:\"dock\",power:p,lit:[],signals:sigs,status:\"returned\",log:[]}); const a=score(c,st(14,{shoal:\"receive\",skerry:\"send\",reed:\"receive\"})); const full={reed:\"send\",foam:\"receive\",shoal:\"send\",skerry:\"receive\"}; const b=score(c,st(24,full)),d=score(c,st(26,full)),e=score(c,st(27,full)); if(a.signal!==4||a.points!==107||b.points!==87||d.points!==123||e.points!==121||d.signal!==6)process.exit(1); console.log(a.points,b.points,d.points,e.points);'"
+    },
+    {
+      "workflow_id": "relay-rules",
+      "command": "npm run check:relay"
     }
   ]
 }

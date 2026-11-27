@@ -1,10 +1,19 @@
-const key = 'tide-relay:v1'
+const baseKey = 'tide-relay:v1'
 
-export function loadVoyage() {
-  try { return JSON.parse(localStorage.getItem(key)) } catch { return null }
+export function loadVoyage(courseId = 'outer-reach') {
+  try {
+    const record = JSON.parse(localStorage.getItem(`${baseKey}:${courseId}`))
+    return record && record.course === courseId ? record : null
+  } catch {
+    return null
+  }
 }
 
 export function saveVoyage(trace) {
-  try { localStorage.setItem(key, JSON.stringify(trace)) } catch { return false }
-  return true
+  try {
+    localStorage.setItem(`${baseKey}:${trace.course}`, JSON.stringify(trace))
+    return true
+  } catch {
+    return false
+  }
 }
