@@ -5,8 +5,12 @@
     ".mjs"
   ],
   "build_command": "npm run build",
-  "testing": "deferred",
+  "testing": "npm test",
   "workflow_checks": [
+    {
+      "workflow_id": "archive-rules",
+      "command": "npm test"
+    },
     {
       "workflow_id": "brief",
       "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const a=briefing(c,[]); if(!a.options.some(x=>x.available)||a.calendar.length!==6)process.exit(1); console.log(a.course.name);'"
