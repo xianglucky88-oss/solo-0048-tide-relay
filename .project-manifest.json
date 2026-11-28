@@ -127,6 +127,44 @@
         "从 POST replay 解析业务输入",
         "应用领域状态与边界，指令重放恢复相同状态"
       ]
+    },
+    {
+      "id": "import-chart",
+      "name": "自制航图导入",
+      "entry": "POST chart",
+      "success": "结构合法且存在 50 条指令内获胜航迹时开赛",
+      "failure": "无效配置返回 invalid-chart，无获胜航迹返回 unsolvable，均保留当前航次",
+      "verification": "node scripts/verify-custom-chart.mjs",
+      "module_ids": [
+        "http",
+        "course",
+        "voyage",
+        "ui"
+      ],
+      "steps": [
+        "校验航图结构、引用、相位与完整开放段",
+        "有界搜索证明可从满电起航达标返港",
+        "区分无效配置与无获胜航迹两类拒收"
+      ]
+    },
+    {
+      "id": "share-record",
+      "name": "自包含实录分享",
+      "entry": "POST replay（version 2）",
+      "success": "陌生浏览器按内嵌开赛航图重放，未结束航次可继续",
+      "failure": "内嵌航图损坏时按 invalid-chart 拒收",
+      "verification": "node scripts/verify-sharing.mjs",
+      "module_ids": [
+        "http",
+        "course",
+        "voyage",
+        "ui"
+      ],
+      "steps": [
+        "导出内嵌完整航图的第 2 版实录",
+        "无本地航图时仅凭实录重放并续玩",
+        "同名同标识新图环境下旧实录仍按内嵌航图复盘"
+      ]
     }
   ],
   "complexity": {
@@ -138,7 +176,10 @@
       "终局评分",
       "浏览器存档及恢复",
       "可行动作预告",
-      "潮相时间线"
+      "潮相时间线",
+      "自制航图结构校验",
+      "有界可解性搜索与双层拒收",
+      "自包含实录的跨浏览器重放与续玩"
     ]
   }
 }

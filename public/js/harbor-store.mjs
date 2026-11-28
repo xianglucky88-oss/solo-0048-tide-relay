@@ -1,10 +1,26 @@
-const key = 'tide-relay:v1'
+const voyageKey = 'tide-relay:v1'
+const chartKey = 'tide-relay:chart:v1'
 
-export function loadVoyage() {
-  try { return JSON.parse(localStorage.getItem(key)) } catch { return null }
+function read(key) {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
 }
 
-export function saveVoyage(trace) {
-  try { localStorage.setItem(key, JSON.stringify(trace)) } catch { return false }
-  return true
+function write(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+    return true
+  } catch {
+    return false
+  }
 }
+
+export const loadVoyage = () => read(voyageKey)
+export const saveVoyage = trace => write(voyageKey, trace)
+
+export const loadChart = () => read(chartKey)
+export const saveChart = chart => write(chartKey, chart)

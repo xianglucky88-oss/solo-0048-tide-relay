@@ -30,6 +30,14 @@
     {
       "workflow_id": "replay",
       "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const data=[go(\"west\"),k(\"tune\"),k(\"wait\"),go(\"crossing\"),k(\"tune\"),go(\"creek\"),k(\"finish\")]; if(JSON.stringify(briefing(c,data))!==JSON.stringify(briefing(c,JSON.parse(JSON.stringify(data)))))process.exit(1); console.log(data.length);'"
+    },
+    {
+      "workflow_id": "custom-chart",
+      "command": "node scripts/verify-custom-chart.mjs"
+    },
+    {
+      "workflow_id": "sharing",
+      "command": "node scripts/verify-sharing.mjs"
     }
   ]
 }
