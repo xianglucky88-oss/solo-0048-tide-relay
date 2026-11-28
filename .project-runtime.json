@@ -30,6 +30,10 @@
     {
       "workflow_id": "replay",
       "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const data=[go(\"west\"),k(\"tune\"),k(\"wait\"),go(\"crossing\"),k(\"tune\"),go(\"creek\"),k(\"finish\")]; if(JSON.stringify(briefing(c,data))!==JSON.stringify(briefing(c,JSON.parse(JSON.stringify(data)))))process.exit(1); console.log(data.length);'"
+    },
+    {
+      "workflow_id": "drill",
+      "command": "node --input-type=module -e 'import {outerReach as c} from \"./server/course/outer-reach.mjs\"; import {briefing} from \"./server/voyage/briefing.mjs\"; import {parseDrill} from \"./server/course/exercises.mjs\"; import {plan} from \"./server/voyage/plan.mjs\"; const go=lane=>({kind:\"sail\",lane}); const k=kind=>({kind}); const pre=[go(\"west\"),k(\"tune\"),k(\"wait\"),go(\"crossing\"),k(\"tune\")]; const a=parseDrill(\"ridge-return:a\"); const b=parseDrill(\"ridge-return:b\"); const at7=briefing(c,pre,a); if(at7.state.tick!==7||at7.state.power!==3||!at7.state.lit.includes(\"skerry\"))process.exit(1); if(briefing(c,[...pre,go(\"creek\")],a).rejected?.code!==\"tide\")process.exit(1); const p=plan(c,at7.state,11,a); if(!p.guarantee||p.common[0]?.kind!==\"wait\"||p.branches.a.finish!==10||p.branches.b.finish!==11)process.exit(1); if(JSON.stringify(plan(c,briefing(c,pre,b).state,11,b))!==JSON.stringify(p))process.exit(1); const late={ex:{...a.ex,announce:9},actual:\"a\"}; if(plan(c,at7.state,11,late).guarantee)process.exit(1); const A=briefing(c,[...pre,k(\"wait\"),...p.branches.a.actions],a); const B=briefing(c,[...pre,k(\"wait\"),...p.branches.b.actions],b); if(!A.score.won||A.state.tick!==10||!B.score.won||B.state.tick!==11)process.exit(1); console.log(p.branches.a.finish, p.branches.b.finish);'"
     }
   ]
 }

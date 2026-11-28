@@ -1,6 +1,6 @@
-export async function request(operation, body) {
-  const options = body === undefined ? {} : {
-    method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body)
+export async function request(operation, body, signal) {
+  const options = body === undefined ? { signal } : {
+    method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal
   }
   const response = await fetch(`/api/tide-relay/${operation}`, options)
   if (!response.ok) {

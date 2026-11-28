@@ -2,10 +2,10 @@ import { sail } from './sail.mjs'
 import { stationOrder } from './station.mjs'
 import { requireRule } from './deny.mjs'
 
-export function apply(course, state, action) {
+export function apply(course, state, action, drill = null) {
   requireRule(state.status === 'sailing', 'closed', '这一班已经结束。')
   let change = { duration: 1, cost: 0 }
-  if (action.kind === 'sail') change = sail(course, state, action)
+  if (action.kind === 'sail') change = sail(course, state, action, drill)
   if (action.kind === 'charge' || action.kind === 'tune') change = stationOrder(course, state, action.kind)
   if (action.kind === 'finish') {
     requireRule(state.at === course.home, 'home', '必须返港后才能交班。')

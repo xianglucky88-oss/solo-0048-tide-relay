@@ -184,3 +184,112 @@ button small {
   color: var(--accent);
   font-weight: 700;
 }
+
+select,input[type=number] {
+  font: inherit;
+  color: inherit;
+  background: #284742;
+  border: 1px solid #66847b;
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+#drill-choice {
+  max-width: 13rem;
+}
+
+.drill {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+  padding-top: 10px;
+}
+
+.drill-note {
+  color: #ffca94;
+  font-size: .87rem;
+  margin: .35rem 0 .7rem;
+}
+
+.drill-arrangements {
+  display: grid;
+  gap: 10px;
+}
+
+.drill-card {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 9px 11px;
+  background: #19302c;
+}
+
+.drill-card.actual {
+  border-color: var(--accent);
+}
+
+.drill-card.muted {
+  opacity: .55;
+}
+
+.drill-card h3,.plan h3,.plan h4,.plan-branch h4 {
+  margin: 0 0 4px;
+  font-size: .95rem;
+}
+
+.drill-card p,.plan p {
+  margin: .2rem 0;
+  font-size: .85rem;
+  color: #c2d6ca;
+}
+
+.drill-windows {
+  list-style: none;
+  margin: .3rem 0 0;
+  padding: 0;
+  font-size: .8rem;
+  color: #a9e9c9;
+  display: grid;
+  gap: 2px;
+}
+
+#plan-form {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+#plan-form button {
+  justify-self: start;
+}
+
+.plan {
+  margin-top: 8px;
+}
+
+.plan-verdict {
+  color: #a9e9c9;
+  margin-bottom: 6px;
+}
+
+.plan-verdict.warn,p.warn {
+  color: #ffca94;
+}
+
+.plan ol {
+  margin: .25rem 0;
+  padding-left: 1.3rem;
+  font-size: .84rem;
+}
+
+.plan-branches {
+  display: grid;
+  gap: 8px;
+}
+
+.plan-branch {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 10px;
+  background: #19302c;
+}
